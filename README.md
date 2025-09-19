@@ -1,5 +1,7 @@
 # Social Media Engagement Text Processing Analysis
 
+> **📊 For the overall analysis summary and professional recommendations, see [Insights.md](Insights.md)**
+
 This repository contains a comprehensive text processing analysis of social media engagement data, specifically focusing on Instagram-style posts with media captions and user comments.
 
 ## Dataset
