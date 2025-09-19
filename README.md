@@ -88,3 +88,67 @@ This Jupyter notebook performs comprehensive natural language processing (NLP) a
   - Includes sentiment scores, POS tags, named entities, and text length metrics
 
 This analysis provides valuable insights into social media engagement patterns, user sentiment, and content characteristics that can inform marketing and content strategy decisions.
+
+## Notebook: `notebooks/decision_trees.ipynb`
+
+This Jupyter notebook implements machine learning models using decision trees to predict comment sentiment based on media caption features and named entity recognition results.
+
+### Key Features
+
+#### 1. **Data Preparation for Modeling**
+- Loads processed engagement data from `data/interim/processed_engagements_with_sentiment.csv`
+- Filters data to include only records with clear sentiment labels (very positive, positive, negative, very negative)
+- Creates binary sentiment classification: `positive` (1 for positive/very positive, 0 for negative/very negative)
+- Extracts NER features as binary indicators:
+  - `has_gpe`: Geographic/political entities (17.71% of records)
+  - `has_norp`: Nationalities/religious/political groups (6.35% of records)  
+  - `has_person`: Person names (40.97% of records)
+  - `has_org`: Organizations (40.52% of records)
+
+#### 2. **Feature Engineering**
+- Combines sentiment features with NER features for modeling
+- Uses `media_caption_polarity` (TextBlob sentiment score) as primary predictor
+- Creates binary indicators from named entity recognition results
+- Prepares data in format suitable for scikit-learn models
+
+#### 3. **Data Splitting**
+- Implements train/validation/test split (60/20/20)
+- Uses stratified splitting with random state for reproducibility
+- Separates features from target variable (`positive` sentiment)
+
+#### 4. **Decision Tree Modeling**
+- Implements DecisionTreeClassifier from scikit-learn
+- Uses DictVectorizer for feature encoding
+- Evaluates model performance using ROC-AUC score
+- Performs hyperparameter tuning for optimal performance
+
+#### 5. **Hyperparameter Optimization**
+- Tests different `max_depth` values (1, 2, 3, 4, None)
+- Optimizes `min_samples_leaf` parameter (1, 5, 10, 15, 20, 100, 200, 500)
+- Uses validation set to prevent overfitting
+- Creates heatmap visualization of parameter combinations
+
+#### 6. **Model Interpretation**
+- Uses `export_text()` to visualize decision tree structure
+- Identifies key decision rules and feature importance
+- Shows how model makes predictions based on feature thresholds
+
+### Technical Implementation
+- **Libraries**: scikit-learn, pandas, numpy, matplotlib, seaborn
+- **Evaluation Metric**: ROC-AUC score for binary classification
+- **Feature Processing**: DictVectorizer for categorical encoding
+- **Model**: DecisionTreeClassifier with optimized parameters
+
+### Key Results
+- **Best Model**: max_depth=3, min_samples_leaf=200 (optimal balance of performance and generalization)
+- **Primary Predictor**: `media_caption_polarity` is the most important feature
+- **NER Impact**: Geographic entities (`has_gpe`) provide additional predictive value
+- **Model Performance**: Achieves reasonable performance while avoiding overfitting
+
+### Model Insights
+- Media caption sentiment is the strongest predictor of comment sentiment
+- Geographic mentions in captions provide additional predictive power
+- Deeper trees (>3 levels) show diminishing returns due to overfitting
+- Minimum sample leaf size of 200 provides good generalization
+
+This modeling approach demonstrates how to build interpretable machine learning models for sentiment prediction using both content features and entity recognition results.
